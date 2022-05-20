@@ -1,52 +1,71 @@
 #!/usr/bin/python3
-
-'''
-Reads stdin line by line and computes metrics
-'''
+""" This is my problem :'v """
 import sys
+import re
+import signal
+from collections import OrderedDict
+
+
+def search_items(line, s):
+    """ Search the items to positionate """
+    regexu = r"\s\d{3}\s\d{1,}"
+    txt = re.search(regexu, line)
+    word = txt.group()
+    word = word[1:]
+
+    regexd = r"\d{3}\s"
+    left = re.search(regexd, word)
+
+    code = left.group()
+    code = code[:-1]
+
+    regext = r"\s\d{1,}"
+    right = re.search(regext, word)
+
+    size = right.group()
+    size = size[1:]
+    size = int(size)
+
+    add_code(code, s)
+
+    return size
+
+
+def add_code(code, codes):
+    """ Count the status code """
+    try:
+        codes[code] += 1
+    except KeyError:
+        pass
+
+
+def print_all(stat):
+    """ Print all """
+    stat = OrderedDict(stat)
+
+    for key, value in stat.items():
+        if value is not 0:
+            print("{}: {}".format(key, value))
+
 
 if __name__ == "__main__":
-
-    status_codes = {200: 0, 301: 0, 400: 0, 401: 0,
-                    403: 0, 404: 0, 405: 0, 500: 0}
-    file_size = [0]
-    count = 1
-
-    def print_stats():
-        '''
-        Prints file size and stats for every 10 loops
-        '''
-        print('File size: {}'.format(file_size[0]))
-
-        for code in sorted(status_codes.keys()):
-            if status_codes[code] != 0:
-                print('{}: {}'.format(code, status_codes[code]))
-
-    def parse_stdin(line):
-        '''
-        Checks the stdin for matches
-        '''
-        try:
-            line = line[:-1]
-            word = line.split(' ')
-            # File size is last parameter on stdout
-            file_size[0] += int(word[-1])
-            # Status code comes before file size
-            status_code = int(word[-2])
-            # Move through dictionary of status codes
-            if status_code in status_codes:
-                status_codes[status_code] += 1
-        except BaseException:
-            pass
+    status = {"200": 0, "301": 0, "400": 0, "401": 0,
+              "403": 0, "404": 0, "405": 0, "500": 0}
+    file_size = 0
+    i = 0
 
     try:
-        for line in sys.stdin:
-            parse_stdin(line)
-            # print the stats after every 10 outputs
-            if count % 10 == 0:
-                print_stats()
-            count += 1
+        for lines in sys.stdin:
+            file_size += search_items(lines, status)
+
+            if i is not 0 and i % 9 == 0:
+                print("File size: {:d}".format(file_size))
+                print_all(status)
+
+            i += 1
     except KeyboardInterrupt:
-        print_stats()
-        raise
-    print_stats()
+        pass
+    finally:
+        print("File size: {:d}".format(file_size))
+        print_all(status)
+        sys.exit(0)
