@@ -11,6 +11,3 @@ For this interview practice algorithm, the code reads from `stdin` and computes 
       * if a status code doesn't appear, don't print anything for status code
       * format: `<status code>: <number>`
       * status codes should be printed in ascending order
-
-### test_files
-The test_files/ directory contains files used to test the output of the algorithm locally.

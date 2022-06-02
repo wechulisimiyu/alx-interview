@@ -8,6 +8,3 @@ For this interview practice algorithm, UTF-8 is used.  A character in UTF-8 can 
   * The data will be represented by a list of integers.
   * Each integer represents 1 byte of data, therefore you only need to handle the 8 least significant bits of each integer.
   * Returns `True` if data is valid UTF-8 encoding, `False` otherwise
-
-### test_files
-The test_files/ directory contains files used to test the output of the algorithm locally.
